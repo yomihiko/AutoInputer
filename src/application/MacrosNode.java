@@ -17,7 +17,6 @@ public class MacrosNode{
 				"0x333333ff","BLACK",
 				"0xff0000ff","RED",
 				"0xffffffff","WHITE"
-
 			);
 	private static final int ZERO = 0;						//ゼロ
 	private static final String NOT = "-";					//適切な値がない時

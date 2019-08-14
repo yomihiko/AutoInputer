@@ -6,10 +6,6 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.StringJoiner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,12 +32,9 @@ public class Main extends Application {
 			EventHandler<ActionEvent> ev = new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent event) {
 					Iterator<Node> iNode = root.getChildren().iterator();
-					ObjectMapper mapper = new ObjectMapper();
-					ArrayNode rootAr = mapper.createArrayNode();
 					StringJoiner sj = new StringJoiner("\n,\n","[\n","\n]");
 					while(iNode.hasNext()) {
 						MacrosNode wkNode = new MacrosNode(iNode.next());
-//						MacrosNode wkNode = (MacrosNode)iNode.next();
 						MacrosJson wkJSON = new MacrosJson();
 						wkJSON.compName = wkNode.getComp();
 						wkJSON.name = wkNode.getName();
@@ -54,13 +47,6 @@ public class Main extends Application {
 						wkJSON.yori = wkNode.getAlignment();
 						wkJSON.txt = wkNode.getText();
 						wkJSON.txtCo = wkNode.getTextFill();
-						try {
-							sj.add(mapper.writeValueAsString(wkJSON));
-						} catch (JsonProcessingException e) {
-							// TODO 自動生成された catch ブロック
-							e.printStackTrace();
-						}
-
 
 					}
 					FileDialog fd = new FileDialog(new Frame(),"",FileDialog.SAVE);
