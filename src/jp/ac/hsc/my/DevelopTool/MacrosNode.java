@@ -1,11 +1,15 @@
-package application;
+package jp.ac.hsc.my.DevelopTool;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 /**
  *
@@ -170,6 +174,33 @@ public class MacrosNode{
 		String c = color.get(colorCode);
 		if(c != null) return c;//カラーコード対応マップに存在する色の場合は英単語で返す
 		return colorCode;
+	}
+
+	public static EventHandler<ActionEvent> getEventHandler(Pane p){
+		return new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO 自動生成されたメソッド・スタブ
+				Iterator<Node> iNode = p.getChildren().iterator();
+				while(iNode.hasNext()) {
+					MacrosNode wkNode = new MacrosNode(iNode.next());
+					MacrosJson wkJSON = new MacrosJson();
+					wkJSON.compName = wkNode.getComp();
+					wkJSON.name = wkNode.getName();
+					wkJSON.x = wkNode.getX();
+					wkJSON.y = wkNode.getY();
+					wkJSON.width = wkNode.getWidth();
+					wkJSON.height = wkNode.getHeight();
+					wkJSON.font = wkNode.getFont();
+					wkJSON.fontSize = wkNode.getFontSize();
+					wkJSON.yori = wkNode.getAlignment();
+					wkJSON.txt = wkNode.getText();
+					wkJSON.txtCo = wkNode.getTextFill();
+				}
+			}
+
+		};
 	}
 	/**
 	 * メソッド実行

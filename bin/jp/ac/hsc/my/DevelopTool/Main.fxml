@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jp.ac.hsc.my.DevelopTool.MainController">
+   <children>
+      <Label layoutX="33.0" layoutY="47.0" text="内部設計書自動入力ツール">
+         <font>
+            <Font name="Meiryo" size="26.0" />
+         </font>
+      </Label>
+      <Button fx:id="getBtn" layoutX="40.0" layoutY="116.0" mnemonicParsing="false" onAction="#onGetBtn" prefHeight="29.0" prefWidth="298.0" text="ファイルを開く">
+         <font>
+            <Font name="Meiryo" size="12.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

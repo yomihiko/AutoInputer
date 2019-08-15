@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="subAnchorMain" prefHeight="600.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jp.ac.hsc.my.DevelopTool.SubController">
+   <children>
+      <Button fx:id="fileReadBtn" layoutX="37.0" layoutY="53.0" mnemonicParsing="false" onAction="#onFileReadBtn" prefHeight="29.0" prefWidth="227.0" text="開始">
+         <font>
+            <Font name="Meiryo" size="12.0" />
+         </font>
+      </Button>
+      <Label layoutX="37.0" layoutY="101.0" text="名前">
+         <font>
+            <Font name="Meiryo" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameLbl" layoutX="38.0" layoutY="140.0" prefHeight="40.0" prefWidth="227.0" text="Label" visible="false">
+         <font>
+            <Font name="Meiryo" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="39.0" layoutY="212.0" text="説明">
+         <font>
+            <Font name="Meiryo" size="16.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="infoFi" disable="true" layoutX="37.0" layoutY="255.0" prefHeight="91.0" prefWidth="227.0" />
+      <Button fx:id="nextBtn" disable="true" layoutX="37.0" layoutY="393.0" mnemonicParsing="false" onAction="#onNextBtn" prefHeight="29.0" prefWidth="227.0" text="次へ">
+         <font>
+            <Font name="Meiryo" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="outputBtn" disable="true" layoutX="37.0" layoutY="441.0" mnemonicParsing="false" onAction="#onOutPutBtn" prefHeight="29.0" prefWidth="227.0" text="出力">
+         <font>
+            <Font name="Meiryo" size="12.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
