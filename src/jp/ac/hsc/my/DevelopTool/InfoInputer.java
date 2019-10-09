@@ -19,9 +19,9 @@ import javafx.stage.Stage;
 
 
 public class InfoInputer extends Application {
-	private static AnchorPane EditMain = new AnchorPane();
-	private static AnchorPane EditSub = new AnchorPane();
-	private static InfoInputer mainIns;
+	private static AnchorPane EditMain = new AnchorPane();//メインのペイン
+	private static AnchorPane EditSub = new AnchorPane();//サブのペイン
+	private static InfoInputer mainIns;//インスタンス
 	private final String SUB = "SubAnchorPane";
 	private ArrayList<MacrosJson> gList;
 	private Iterator<MacrosJson> iteGlist;
@@ -50,9 +50,13 @@ public class InfoInputer extends Application {
 		}
 
 	}
+	/**
+	 * 内部設計自動生成
+	 * @param fileURL
+	 */
 	public void inputModule(String fileURL) {
 		try {
-			Stage primaryStage = new Stage();
+			Stage primaryStage = new Stage();//読み込んだファイル表示用
 			EditMain = (AnchorPane)FXMLLoader.load(new URL(fileURL));
 			EditSub = (AnchorPane)FXMLLoader.load(getClass().getResource("InfoInput.fxml"));
 			double x = EditMain.getPrefWidth() + 300;
