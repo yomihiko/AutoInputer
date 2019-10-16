@@ -1,28 +1,30 @@
 package jp.ac.hsc.my.DevelopTool;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import jp.ac.hsc.my.DevelopTool.Controllers.MainController;
+import jp.ac.hsc.my.DevelopTool.Controllers.ProvisionalController;
+import jp.ac.hsc.my.DevelopTool.Controllers.SubController;
 
 
 public class InfoInputer extends Application {
-	private static AnchorPane EditMain = new AnchorPane();//メインのペイン
-	private static AnchorPane EditSub = new AnchorPane();//サブのペイン
 	private static InfoInputer mainIns;//インスタンス
-	private final String SUB = "SubAnchorPane";
+	private static Stage stage;//メインのステージ
+	private static Stage subStage;//読み込んだファイルのステージ
+	private ArrayList<Node> nList;
 	private ArrayList<MacrosJson> gList;
 	private Iterator<MacrosJson> iteGlist;
 	private Iterator<Node> iteNode;
@@ -35,11 +37,14 @@ public class InfoInputer extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("Main.fxml"));
-			Scene scene = new Scene(root,400,200);
-			primaryStage.setScene(scene);
-			primaryStage.resizableProperty().setValue(false);
-			primaryStage.show();
+			mainIns = this;
+			stage = primaryStage;
+			stage.setResizable(false);
+			openMain();//メイン画面を開く
+			stage.showingProperty().addListener((observable, oldValue, newValue) -> {
+				if (oldValue == true && newValue == false) finishApp();	// ステージが非表示になったときに呼ばれる->最後に呼ばれる
+			});
+			stage.show();
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			Alert alt = new Alert(AlertType.ERROR);
@@ -51,27 +56,79 @@ public class InfoInputer extends Application {
 
 	}
 	/**
+	 * メインインスタンスゲッター
+	 * @return メインインスタンス
+	 */
+	public static InfoInputer getIns() {
+		return mainIns;
+	}
+	/**
+	 * ステージゲッター
+	 * @return
+	 */
+	public static Stage getStage() {
+		return stage;
+	}
+	/**
+	 * 最後の処理
+	 */
+	private void finishApp() {
+		Platform.exit();
+	}
+	/**
+	 * メイン画面に遷移
+	 */
+	public void openMain() {
+		stage.setTitle("メイン画面");
+		MainController c = new MainController();
+		replaceScene(c);
+	}
+	public void openInputer() {
+		stage.setTitle("入力画面");
+		SubController c = new SubController();
+		replaceScene(c);
+	}
+	/**
+	 * シーンの切り替え
+	 * @param controller
+	 */
+	private void replaceScene(Parent controller) {
+		// TODO 自動生成されたメソッド・スタブ
+		Scene scene = stage.getScene();		// ステージからシーンを取得
+		if (scene == null) {							// まだステージにシーンが設定されていない場合：初期画面時
+			scene = new Scene(controller);		// コントローラを使用してシーンの生成
+			stage.setScene(scene);					// ステージにシーンを設定
+		} else {												// すでにステージにシーンが設定されている場合：画面遷移時
+			scene.setRoot(controller);				// ルートノードにコントローラを設定してシーンを置換する
+		}
+	}
+	/**
+	 * 内部設計書自動生成対象ファイルを開く
+	 * @param uri ファイルのURI
+	 */
+	public void makeSubStage(String uri) {
+		subStage = new Stage();
+		subStage.setResizable(false);
+		subStage.setTitle("仮");
+		ProvisionalController c = new ProvisionalController(uri);//仮のコントローラを設定
+		Scene scene = new Scene(c);
+		subStage.setX(100);
+		subStage.setY(40);
+		subStage.setScene(scene);
+		inputModule(scene);
+		subStage.show();
+
+	}
+	/**
 	 * 内部設計自動生成
 	 * @param fileURL
 	 */
-	public void inputModule(String fileURL) {
+	public void inputModule(Scene scene) {
 		try {
-			Stage primaryStage = new Stage();//読み込んだファイル表示用
-			EditMain = (AnchorPane)FXMLLoader.load(new URL(fileURL));
-			EditSub = (AnchorPane)FXMLLoader.load(getClass().getResource("InfoInput.fxml"));
-			double x = EditMain.getPrefWidth() + 300;
-			Scene scene = new Scene(EditMain,x,600);
-			primaryStage.setScene(scene);
-			ArrayList<Node> wklIte = new ArrayList<>();//EditMain.getChildren().listIterator();
-			wklIte.add(EditMain);
-			EditSub.setLayoutX(EditMain.getPrefWidth());
-			EditSub.setLayoutY(0);
-			EditSub.setId(SUB);
-			EditMain.getChildren().add(EditSub);
-			wklIte.addAll(EditMain.getChildren());
-			iteNode = wklIte.iterator();
-			mainIns = this;
-			primaryStage.showAndWait();
+			nList = new ArrayList<>();
+			GridPane g = (GridPane)scene.getRoot();//Root要素をGridPaneとして読み込む
+			nList.addAll(g.getChildren());//GridPaneの子要素をリストに追加
+
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
 			Alert alt = new Alert(AlertType.ERROR);
@@ -81,30 +138,8 @@ public class InfoInputer extends Application {
 			alt.showAndWait();
 		}
 	}
-	public static AnchorPane getMainAnchor() {
-		return EditMain;
-	}
-	public static AnchorPane getSubAnchor() {
-		return EditSub;
-	}
-	public static InfoInputer getIns() {
-		return mainIns;
-	}
-	public void InfoInput(AnchorPane main,AnchorPane sub) {
-		Iterator<Node> iNode = main.getChildren().iterator();
-		ArrayList<MacrosJson> gList = new ArrayList<>();
-		gList.add(inputer(new MacrosNode(EditMain)));
-		while(iNode.hasNext()) {
-			MacrosNode wkNode = new MacrosNode(iNode.next());
-			MacrosJson wkJSON = new MacrosJson();
-			if(Objects.equals(wkNode.getName(), SUB)) {
-				continue;
-			}
-			wkJSON = inputer(wkNode);
-			gList.add(wkJSON);
-		}
-		this.gList = gList;
-		iteGlist = gList.iterator();
+	public void InfoInput() {
+
 	}
 	public boolean hasNext() {
 		return iteNode.hasNext() && iteGlist.hasNext();

@@ -1,13 +1,15 @@
-package jp.ac.hsc.my.DevelopTool;
+package jp.ac.hsc.my.DevelopTool.Controllers;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -16,10 +18,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import jp.ac.hsc.my.DevelopTool.ILoadFxml;
+import jp.ac.hsc.my.DevelopTool.InfoInputer;
+import jp.ac.hsc.my.DevelopTool.MacrosJson;
 
 
 
-public class SubController {
+public class SubController extends AnchorPane implements ILoadFxml,Initializable {
 
 	@FXML
 	private AnchorPane subAnchorMain;
@@ -40,11 +45,24 @@ public class SubController {
 	private Button outputBtn;
 
 
+	public SubController() {
+		// TODO 自動生成されたコンストラクター・スタブ
+		loadFxml("fxml/infoinput.fxml");
+	}
 
-	@FXML
-	void onFileReadBtn(ActionEvent event) {
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO 自動生成されたメソッド・スタブ
+		fileReadBtn.setOnAction(event -> {
+			onStart();
+		});
+	}
+	/**
+	 * 開始ボタンを押したときの挙動
+	 */
+	private void onStart() {
 		InfoInputer mainIns = InfoInputer.getIns();
-		mainIns.InfoInput(InfoInputer.getMainAnchor(), InfoInputer.getSubAnchor());
+		//mainIns.InfoInput(InfoInputer.getMainAnchor(), InfoInputer.getSubAnchor());
 		if(mainIns.hasNext()) {
 			mainIns.next();
 			System.out.println(mainIns.getName());
@@ -52,13 +70,9 @@ public class SubController {
 			nameLbl.setVisible(true);
 			mainIns.setEffect();
 		}
-		fileReadBtn.setDisable(true);
-		nextBtn.setDisable(false);
-		infoFi.setDisable(false);
 	}
 
-	@FXML
-    void onNextBtn(ActionEvent event) {
+    private void onNextBtn() {
 		InfoInputer mainIns = InfoInputer.getIns();
 		mainIns.setComment(infoFi.getText());
 		mainIns.removeEffect();
@@ -75,8 +89,7 @@ public class SubController {
 		}
     }
 
-    @FXML
-    void onOutPutBtn(ActionEvent event) {
+    private void onOutPutBtn() {
     	InfoInputer mainIns = InfoInputer.getIns();
     	ArrayList<MacrosJson> wkList = mainIns.getGList();
     	String wkst = "";
