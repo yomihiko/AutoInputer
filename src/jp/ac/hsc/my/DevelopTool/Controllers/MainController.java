@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import jp.ac.hsc.my.DevelopTool.ILoadFxml;
-import jp.ac.hsc.my.DevelopTool.InfoInputer;
+import jp.ac.hsc.my.DevelopTool.Main;
 
 public class MainController extends AnchorPane implements ILoadFxml,Initializable {
 
@@ -58,8 +58,8 @@ public class MainController extends AnchorPane implements ILoadFxml,Initializabl
     		String fileName = file.getPath();
     		fileName = fileName.replaceAll("\\\\", "/");
     		fileName = "file:/" + fileName;
-    		InfoInputer.getIns().openInputer();
-    		InfoInputer.getIns().makeSubStage(fileName);
+    		Main.getIns().openInputer();
+    		Main.getIns().makeSubStage(fileName);
     	}
 	}
 

@@ -2,16 +2,12 @@ package jp.ac.hsc.my.DevelopTool.Controllers;
 
 import java.net.MalformedURLException;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import jp.ac.hsc.my.DevelopTool.ILoadFxml;
 
-public class ProvisionalController extends AnchorPane implements ILoadFxml {
+public class ProvisionalController extends GridPane implements ILoadFxml {
 
 
-    @FXML
-    private Button getBtn;
 
 
     public ProvisionalController(String uri) {
