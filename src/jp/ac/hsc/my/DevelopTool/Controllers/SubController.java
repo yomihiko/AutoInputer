@@ -6,11 +6,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -39,6 +42,9 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	private Label nameLbl;
 
 	@FXML
+	private Label compLbl;
+
+	@FXML
 	private Button fileReadBtn;
 
 	@FXML
@@ -51,6 +57,7 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	private Button outputBtn;
 
 	private int index;
+	private String[] haveChildren = {"GridPane","HBox","VBox","TableView"};
 	private NodeIterator nIte;//ノードイテレータ
 	private Node wkNode;
 	private MacrosNode wkMn;
@@ -69,6 +76,10 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		nextBtn.setOnAction(event ->{
 			onNextBtn();
 		});
+		outputBtn.setOnAction(event -> {
+			onOutPutBtn();
+			subAnchorMain.getBackground().getFills().forEach(e -> System.out.println(e.getFill()));
+		});
 	}
 	/**
 	 * 開始ボタンを押したときの挙動
@@ -78,12 +89,7 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		nIte = new NodeIterator(Main.getIns().getNList());
 		mainMacros = new ArrayList<>();
 		if(nIte.hasNext()) {
-			wkNode = nIte.next();
-			wkMn = new MacrosNode(wkNode);
-			MacrosJson wkJ = inputer(wkMn);
-			nameLbl.setText(wkMn.getName());//ラベルにfx:idを設定
-			mainMacros.add(wkJ);//ノード情報をリストに追加
-			wkNode.setEffect(newDropShadow());
+			nodePointer();
 
 		}
 	}
@@ -93,21 +99,20 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		wkNode.setEffect(null);//エフェクトを消す
 		infoFi.setText("");
 		if(nIte.hasNext()) {
-			wkNode = nIte.next();
-			wkMn = new MacrosNode(wkNode);
-			MacrosJson wkJ = inputer(wkMn);
-			nameLbl.setText(wkMn.getName());
-			mainMacros.add(wkJ);//ノード情報をリストに追加
-			wkNode.setEffect(newDropShadow());
+			index++;
+			nodePointer();
+			if(Arrays.stream(haveChildren).anyMatch(child -> Objects.equals(child, wkMn.getComp()))) {
+				Parent p = (Parent) wkNode;
+				nIte.setRecursive(p.getChildrenUnmodifiable());
+			}
 		}
     }
 
     private void onOutPutBtn() {
     	Main mainIns = Main.getIns();
-    	ArrayList<MacrosJson> wkList = mainIns.getGList();
     	String wkst = "";
-    	for(int i = 0;i < wkList.size();i++) {
-    		wkst = wkst + wkList.get(i).getCSV();
+    	for(int i = 0;i < mainMacros.size();i++) {
+    		wkst = wkst + mainMacros.get(i).getCSV();
     	}
     	FileChooser fc = new FileChooser();
     	ExtensionFilter e = new ExtensionFilter("CSVファイル", "*.csv");
@@ -123,7 +128,15 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 			}
 		}
     }
-
+    private void nodePointer() {
+    	wkNode = nIte.next();
+		wkMn = new MacrosNode(wkNode);
+		MacrosJson wkJ = inputer(wkMn);
+		nameLbl.setText(wkMn.getName());
+		compLbl.setText(wkMn.getComp());
+		mainMacros.add(wkJ);//ノード情報をリストに追加
+		wkNode.setEffect(newDropShadow());
+    }
     /**
      * 対象ノードに適応するエフェクトの設定
      * @return

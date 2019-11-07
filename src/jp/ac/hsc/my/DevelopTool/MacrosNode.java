@@ -9,6 +9,7 @@ import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 /**
@@ -25,7 +26,7 @@ public class MacrosNode{
 	private static final int ZERO = 0;						//ゼロ
 	private static final String NOT = "-";					//適切な値がない時
 	private static final String POINT = "\\.";				//小数点
-	private static final String PANE = "AnchorPane";		//rootPaneの種類
+	private static final String PANE = "GridPane";		//rootPaneの種類
 	private static final String GETWIDTH = "getWidth";		//幅を取得するメソッド名
 	private static final String GETHEIGHT = "getHeight";	//高さを取得するメソッド名
 	private static final String GETFONT = "getFont";		//高さを取得するメソッド名
@@ -52,6 +53,8 @@ public class MacrosNode{
 	 * @return 変数名
 	 */
 	public String getName() {
+		String st = node.getId();
+		if(st == null) return "fx:idが設定されていません";
 		return node.getId();
 	}
 	/**
@@ -62,7 +65,12 @@ public class MacrosNode{
 		if(Objects.equals(getComp(), PANE)) {
 			return NOT;
 		}
-		return Integer.toString((int)node.getLayoutX());
+		try {
+			return Integer.toString(GridPane.getColumnIndex(node));
+		}catch (Exception e) {
+			// TODO: handle exception
+			return NOT;
+		}
 	}
 	/**
 	 * Y座標を返す
@@ -72,7 +80,13 @@ public class MacrosNode{
 		if(Objects.equals(getComp(), PANE)) {
 			return NOT;
 		}
-		return Integer.toString((int)node.getLayoutY());
+		try {
+			return Integer.toString(GridPane.getRowIndex(node));
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return NOT;
+		}
 	}
 	/**
 	 * 幅を返す
