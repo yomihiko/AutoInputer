@@ -14,6 +14,7 @@ public class MacrosJson {
 	public String yori;
 	public String txt;
 	public String txtCo;
+	public String backCo;
 	public String comment = "-";
 	public String getCSV() {
 		StringJoiner sj = new StringJoiner(",","","\n");
@@ -28,7 +29,7 @@ public class MacrosJson {
 		sj.add(yori);
 		sj.add(txt);
 		sj.add(txtCo);
-		sj.add("-");
+		sj.add(backCo);
 		sj.add(comment);
 		return sj.toString();
 	}

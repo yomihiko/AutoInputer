@@ -2,15 +2,12 @@ package jp.ac.hsc.my.DevelopTool;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 /**
  *
@@ -30,7 +27,6 @@ public class MacrosNode{
 	private static final String GETWIDTH = "getWidth";		//幅を取得するメソッド名
 	private static final String GETHEIGHT = "getHeight";	//高さを取得するメソッド名
 	private static final String GETFONT = "getFont";		//高さを取得するメソッド名
-	private static final String GETALIG = "getAlignment";	//寄せを取得するメソッド
 	private static final String GETTEXT = "getText";
 	private static final String GETTEXTFI = "getTextFill";
 	private static final String FONT = "Meiryo";			//規定フォント
@@ -145,10 +141,16 @@ public class MacrosNode{
 	 */
 	public String getAlignment() {
 
-		if(Objects.equals(methodRun(GETALIG), NOT)) {//寄せがない時
+		if(Objects.equals(getComp(), PANE)) {
 			return NOT;
 		}
-		return methodRun(GETALIG).toString();
+		try {
+			return GridPane.getHalignment(node).toString();
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			return NOT;
+		}
 	}
 	/**
 	 * テキストを返す
@@ -181,40 +183,21 @@ public class MacrosNode{
 	 * @return 背景色
 	 */
 	public String getBackColor() {
-		if(Objects.equals(methodRun(GETTEXTFI), NOT)) {//テキストがない時
+		if(Objects.equals(methodRun("getBackground"), NOT)) {//テキストがない時
 			return NOT;
 		}
-		String colorCode = methodRun(GETTEXTFI).toString();
-		String c = color.get(colorCode);
+		Background bk = (Background)methodRun("getBackground");
+		String re = NOT;
+		if(bk != null && bk.getFills().size() > 0) {
+			System.out.println(bk.getFills().get(0).getFill().toString());
+			re = bk.getFills().get(0).getFill().toString();
+		}
+		if(re.length() >= 11) {
+			re = NOT;
+		}
+		String c = color.get(re);
 		if(c != null) return c;//カラーコード対応マップに存在する色の場合は英単語で返す
-		return colorCode;
-	}
-
-	public static EventHandler<ActionEvent> getEventHandler(Pane p){
-		return new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO 自動生成されたメソッド・スタブ
-				Iterator<Node> iNode = p.getChildren().iterator();
-				while(iNode.hasNext()) {
-					MacrosNode wkNode = new MacrosNode(iNode.next());
-					MacrosJson wkJSON = new MacrosJson();
-					wkJSON.compName = wkNode.getComp();
-					wkJSON.name = wkNode.getName();
-					wkJSON.x = wkNode.getX();
-					wkJSON.y = wkNode.getY();
-					wkJSON.width = wkNode.getWidth();
-					wkJSON.height = wkNode.getHeight();
-					wkJSON.font = wkNode.getFont();
-					wkJSON.fontSize = wkNode.getFontSize();
-					wkJSON.yori = wkNode.getAlignment();
-					wkJSON.txt = wkNode.getText();
-					wkJSON.txtCo = wkNode.getTextFill();
-				}
-			}
-
-		};
+		return re;
 	}
 	/**
 	 * メソッド実行

@@ -56,12 +56,16 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	 @FXML
 	private Button outputBtn;
 
-	private int index;
-	private String[] haveChildren = {"GridPane","HBox","VBox","TableView"};
+	private int index;//ノードを指すポインタ
+	private String[] haveChildren = {"GridPane","HBox","VBox"};
 	private NodeIterator nIte;//ノードイテレータ
 	private Node wkNode;
-	private MacrosNode wkMn;
+	private MacrosNode wkMn;//減税編集中のノードの設計情報を一時的に保存する
 	private ArrayList<MacrosJson> mainMacros;
+
+
+	private String[] backgroundColorStyleClasses = {"greenBtn","blueBtn","redBtn"};
+	private String whiteText = "Button";
 	public SubController() {
 		// TODO 自動生成されたコンストラクター・スタブ
 		loadFxml("fxml/infoinput.fxml");
@@ -90,7 +94,6 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		mainMacros = new ArrayList<>();
 		if(nIte.hasNext()) {
 			nodePointer();
-
 		}
 	}
 
@@ -103,20 +106,20 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 			nodePointer();
 			if(Arrays.stream(haveChildren).anyMatch(child -> Objects.equals(child, wkMn.getComp()))) {
 				Parent p = (Parent) wkNode;
-				nIte.setRecursive(p.getChildrenUnmodifiable());
+
+				nIte.setRecursive(p.getChildrenUnmodifiable(),1,1);
 			}
 		}
     }
 
     private void onOutPutBtn() {
-    	Main mainIns = Main.getIns();
-    	String wkst = "";
+    	String wkst = "";//ファイルに書き込むCSV文字列を保存する変数
     	for(int i = 0;i < mainMacros.size();i++) {
-    		wkst = wkst + mainMacros.get(i).getCSV();
+    		wkst = wkst + mainMacros.get(i).getCSV();//データをCSV形式にする
     	}
     	FileChooser fc = new FileChooser();
     	ExtensionFilter e = new ExtensionFilter("CSVファイル", "*.csv");
-		fc.getExtensionFilters().add(e );
+		fc.getExtensionFilters().add(e);
 		File csvFile = fc.showSaveDialog(null);
 		if(csvFile != null) {
 			try {
@@ -128,6 +131,9 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 			}
 		}
     }
+    /**
+     * 次のノードへシフトする
+     */
     private void nodePointer() {
     	wkNode = nIte.next();
 		wkMn = new MacrosNode(wkNode);
@@ -166,6 +172,10 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		wkJSON.yori = wkNode.getAlignment();
 		wkJSON.txt = wkNode.getText();
 		wkJSON.txtCo = wkNode.getTextFill();
+		wkJSON.backCo = wkNode.getBackColor();
+		if(wkNode.getComp().equals(whiteText)) {
+			wkJSON.txtCo = ".button";
+		}
 		return wkJSON;
 	}
 }

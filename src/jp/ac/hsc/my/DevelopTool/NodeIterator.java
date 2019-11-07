@@ -15,10 +15,21 @@ public class NodeIterator implements Iterator<Node> {
 	private int index;//イテレータ用のインデックス
 	private List<Node> list;//ノードを格納するインデックス
 	private NodeIterator recursive ;//子要素を持つノードを入れ子にする
+	private int row;
+	private int column;
 	public NodeIterator(List<Node> li) {
 		// TODO 自動生成されたコンストラクター・スタブ
 		list = li;
 		index = 0;
+		row = -1;
+		column = -1;
+	}
+	public NodeIterator(List<Node> li,int row,int column) {
+		// TODO 自動生成されたコンストラクター・スタブ
+		list = li;
+		index = 0;
+		this.row = row;
+		this.column = column;
 	}
 	@Override
 	public boolean hasNext() {
@@ -43,8 +54,8 @@ public class NodeIterator implements Iterator<Node> {
 	 * 子要素を持つノードを入れ子にする
 	 * @param li
 	 */
-	public void setRecursive(List<Node> li) {
-		recursive = new NodeIterator(li);
+	public void setRecursive(List<Node> li,int row,int column) {
+		recursive = new NodeIterator(li,row,column);
 	}
 
 

@@ -1,7 +1,6 @@
 package jp.ac.hsc.my.DevelopTool;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javafx.application.Application;
@@ -22,11 +21,7 @@ public class Main extends Application {
 	private static Main mainIns;//インスタンス
 	private static Stage stage;//メインのステージ
 	private static Stage subStage;//読み込んだファイルのステージ
-	private ArrayList<Node> nList;
-	private ArrayList<MacrosJson> gList;
-	private Iterator<MacrosJson> iteGlist;
-	private Iterator<Node> iteNode;
-	private Node wkNode;
+	private ArrayList<Node> nList;//自動入力対象画面の全ノードのリスト
 	private MacrosJson wkJson;
 	private final int ABNORMAL = -1;
 	private final String errTitle = "ファイル読み込みエラー";
@@ -81,6 +76,9 @@ public class Main extends Application {
 		MainController c = new MainController();
 		replaceScene(c);
 	}
+	/**
+	 * コメント入力画面に遷移する
+	 */
 	public void openInputer() {
 		stage.setTitle("入力画面");
 		SubController c = new SubController();
@@ -138,11 +136,12 @@ public class Main extends Application {
 			alt.showAndWait();
 		}
 	}
+	/**
+	 * 自動入力対象の画面の全ノードのリストを返す
+	 * @return
+	 */
 	public List<Node> getNList(){
 		return nList;
-	}
-	public void setComment(String comment) {
-		wkJson.comment = comment;
 	}
 	public static void main(String[] args) {
 		launch(args);
