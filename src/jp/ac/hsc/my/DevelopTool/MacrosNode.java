@@ -189,7 +189,6 @@ public class MacrosNode{
 		Background bk = (Background)methodRun("getBackground");
 		String re = NOT;
 		if(bk != null && bk.getFills().size() > 0) {
-			System.out.println(bk.getFills().get(0).getFill().toString());
 			re = bk.getFills().get(0).getFill().toString();
 		}
 		if(re.length() >= 11) {
@@ -198,6 +197,23 @@ public class MacrosNode{
 		String c = color.get(re);
 		if(c != null) return c;//カラーコード対応マップに存在する色の場合は英単語で返す
 		return re;
+	}
+
+	public String getStyleClass() {
+		if(Objects.equals(methodRun("getStyleClass"), NOT)) {//テキストがない時
+			return NOT;
+		}
+		if(methodRun("getStyleClass").toString() == null) {
+			return NOT;
+		}
+		if(methodRun("getStyleClass").toString().equals("root")) {
+			return NOT;
+		}
+		//ObservableList<String> style = (ObservableList<String>) methodRun(GETTEXT);
+		//return String.join("\n", style);
+		String st = methodRun("getStyleClass").toString();
+		st = st.replaceAll(" ", "\n");
+		return st;
 	}
 	/**
 	 * メソッド実行

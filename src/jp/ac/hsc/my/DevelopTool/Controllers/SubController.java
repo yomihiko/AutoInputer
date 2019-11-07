@@ -19,6 +19,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
@@ -36,25 +37,61 @@ import jp.ac.hsc.my.DevelopTool.NodeIterator;
 public class SubController extends AnchorPane implements ILoadFxml,Initializable {
 
 	@FXML
-	private AnchorPane subAnchorMain;
+    private AnchorPane subAnchorMain;
 
-	@FXML
-	private Label nameLbl;
+    @FXML
+    private Button fileReadBtn;
 
-	@FXML
-	private Label compLbl;
+    @FXML
+    private Label nameLbl;
 
-	@FXML
-	private Button fileReadBtn;
-
-	@FXML
-	private TextArea infoFi;
-
-	@FXML
+    @FXML
     private Button nextBtn;
 
-	 @FXML
-	private Button outputBtn;
+    @FXML
+    private Button outputBtn;
+
+    @FXML
+    private Label compLbl;
+
+    @FXML
+    private TextField rowfi;
+
+    @FXML
+    private TextField colfi;
+
+    @FXML
+    private TextField weifi;
+
+    @FXML
+    private TextField heifi;
+
+    @FXML
+    private TextField fontfi;
+
+    @FXML
+    private TextField fsfi;
+
+    @FXML
+    private TextField yorifi;
+
+    @FXML
+    private TextField valuefi;
+
+    @FXML
+    private TextField textclofi;
+
+    @FXML
+    private TextField backfi;
+
+    @FXML
+    private TextField bikofi;
+
+    @FXML
+    private Button csvBtn;
+
+    @FXML
+    private TextArea classfi;
 
 	private int index;//ノードを指すポインタ
 	private String[] haveChildren = {"GridPane","HBox","VBox"};
@@ -98,9 +135,9 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	}
 
     private void onNextBtn() {
-		mainMacros.get(index).comment = infoFi.getText();//入力値をコメントにセット
+		mainMacros.get(index).comment = bikofi.getText();//入力値をコメントにセット
 		wkNode.setEffect(null);//エフェクトを消す
-		infoFi.setText("");
+		bikofi.setText("");
 		if(nIte.hasNext()) {
 			index++;
 			nodePointer();
@@ -137,11 +174,10 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     private void nodePointer() {
     	wkNode = nIte.next();
 		wkMn = new MacrosNode(wkNode);
-		MacrosJson wkJ = inputer(wkMn);
-		nameLbl.setText(wkMn.getName());
-		compLbl.setText(wkMn.getComp());
-		mainMacros.add(wkJ);//ノード情報をリストに追加
+		fi(wkMn);
 		wkNode.setEffect(newDropShadow());
+		MacrosJson mj = inputer(wkMn);
+		mainMacros.add(mj);
     }
     /**
      * 対象ノードに適応するエフェクトの設定
@@ -153,6 +189,21 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		ds.setBlurType(BlurType.THREE_PASS_BOX);
 		return ds;
 	}
+    private void fi(MacrosNode wkNode) {
+    	compLbl.setText(wkNode.getComp());
+    	nameLbl.setText(wkNode.getName());
+    	rowfi.setText(wkNode.getX());
+    	colfi.setText(wkNode.getY());
+    	heifi.setText(wkNode.getHeight());
+    	weifi.setText(wkNode.getWidth());
+    	fontfi.setText(wkNode.getFont());
+    	fsfi.setText(wkNode.getFontSize());
+    	yorifi.setText(wkNode.getAlignment());
+    	valuefi.setText(wkNode.getText());
+    	textclofi.setText(wkNode.getTextFill());
+    	backfi.setText(wkNode.getBackColor());
+    	classfi.setText(wkNode.getStyleClass());
+    }
 
     /**
      * ノードの情報を取得する

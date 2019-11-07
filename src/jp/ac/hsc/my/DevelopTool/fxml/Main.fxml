@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<fx:root id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="300.0" stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="6.0" layoutY="231.0" text="内部設計書自動入力ツール">
+      <Label layoutX="156.0" layoutY="228.0" text="内部設計書自動入力ツール">
          <font>
             <Font name="Meiryo" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="getBtn" layoutX="14.0" layoutY="300.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="273.0" text="ファイルを開く">
+      <Button fx:id="getBtn" layoutX="164.0" layoutY="300.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="273.0" text="ファイルを開く">
          <font>
             <Font name="Meiryo" size="12.0" />
          </font>
