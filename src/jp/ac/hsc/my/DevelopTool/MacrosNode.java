@@ -16,9 +16,9 @@ import javafx.scene.text.Font;
 public class MacrosNode{
 	private Node node;										//対象ノード
 	private Map<String,String> color = Map.of(
-				"0x333333ff","BLACK",
-				"0xff0000ff","RED",
-				"0xffffffff","WHITE"
+				"0x333333ff","Black",
+				"0xff0000ff","Red",
+				"0xffffffff","White"
 			);
 	private static final int ZERO = 0;						//ゼロ
 	private static final String NOT = "-";					//適切な値がない時

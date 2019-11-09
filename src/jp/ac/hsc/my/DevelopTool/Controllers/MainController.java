@@ -24,21 +24,7 @@ public class MainController extends AnchorPane implements ILoadFxml,Initializabl
 		// TODO 自動生成されたコンストラクター・スタブ
     	loadFxml("fxml/Main.fxml");
 	}
-//    @FXML
-//    void onGetBtn(ActionEvent event) {
-//    	InfoInputer info = new InfoInputer();
-//    	FileChooser fc = new FileChooser();
-//    	fc.setInitialDirectory(new File("."));
-//    	fc.getExtensionFilters().add(new ExtensionFilter("FXMLファイル", "*.fxml"));
-//    	File file = fc.showOpenDialog(null);
-//    	if(file != null) {
-//    		String fileName = file.getPath();
-//    		fileName = fileName.replaceAll("\\\\", "/");
-//    		fileName = "file:/" + fileName;
-//    		info.inputModule(fileName);
-//        	info.InfoInput(InfoInputer.getMainAnchor(), InfoInputer.getSubAnchor());
-//    	}
-//    }
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO 自動生成されたメソッド・スタブ
@@ -58,8 +44,8 @@ public class MainController extends AnchorPane implements ILoadFxml,Initializabl
     		String fileName = file.getPath();
     		fileName = fileName.replaceAll("\\\\", "/");
     		fileName = "file:/" + fileName;
-    		Main.getIns().openInputer();
     		Main.getIns().makeSubStage(fileName);
+    		Main.getIns().openInputer();
     	}
 	}
 

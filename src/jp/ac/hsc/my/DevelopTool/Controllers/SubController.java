@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -93,18 +94,27 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     @FXML
     private TextArea classfi;
 
-	private int index;//ノードを指すポインタ
 	private String[] haveChildren = {"GridPane","HBox","VBox"};
 	private NodeIterator nIte;//ノードイテレータ
 	private Node wkNode;
 	private MacrosNode wkMn;//減税編集中のノードの設計情報を一時的に保存する
 	private ArrayList<MacrosJson> mainMacros;
 
+	private String[] sizeInputReg =
+		{".root",".timeLabel",".title",".table-view",".titleBtnText",
+				".titleBtnTextSystemName","-"};//文字サイズの入力規制
+	private String[] frontColorReg =
+		{"Black",".timeLabel",".button",".title",".titleBtnText","-"};//前景色の入力規制
+	private String[] backColorReg =
+		{".root",".greenBtn",".blueBtn",".redBtn",".timeBack",".combo-box",".table-view",
+				".titleBack","-"};//背景色の入力規制
 
-	private String[] backgroundColorStyleClasses = {"greenBtn","blueBtn","redBtn"};
-	private String whiteText = "Button";
+
 	public SubController() {
 		// TODO 自動生成されたコンストラクター・スタブ
+
+		nIte = new NodeIterator(Main.getIns().getNList());//ノードイテレータ設定
+		mainMacros = new ArrayList<>();//全ノードの設計情報を記録するリスト
 		loadFxml("fxml/infoinput.fxml");
 	}
 
@@ -119,29 +129,51 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		});
 		outputBtn.setOnAction(event -> {
 			onOutPutBtn();
-			subAnchorMain.getBackground().getFills().forEach(e -> System.out.println(e.getFill()));
 		});
+		fileReadBtn.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+			return ! compLbl.getText().isEmpty();//コンポーネントラベルがからの時は開始前
+		},compLbl.textProperty()));
+		nextBtn.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+			return compLbl.getText().isEmpty() || ! nIte.hasNext();
+		},bikofi.textProperty()));
+		outputBtn.disableProperty().bind(Bindings.createBooleanBinding(() -> {
+			return compLbl.getText().isEmpty() ||  nIte.hasNext();
+		},bikofi.textProperty()));
 	}
 	/**
 	 * 開始ボタンを押したときの挙動
 	 */
 	private void onStart() {
-		index = 0;
-		nIte = new NodeIterator(Main.getIns().getNList());
-		mainMacros = new ArrayList<>();
 		if(nIte.hasNext()) {
-			nodePointer();
+			wkNode = nIte.next();//ノードを進める
+			wkMn = new MacrosNode(wkNode);//ノードの設計情報
+    		fi(wkMn);//テキストフィールドに値を入れる
+    		wkNode.setEffect(newDropShadow());//
 		}
 	}
 
+	/**
+	 * 次へボタンを押したときの挙動
+	 */
     private void onNextBtn() {
-		mainMacros.get(index).comment = bikofi.getText();//入力値をコメントにセット
 		wkNode.setEffect(null);//エフェクトを消す
-		bikofi.setText("");
-		if(nIte.hasNext()) {
-			index++;
-			nodePointer();
+		resetEffect();//入力フォームのエフェクトを一旦リセットする
+		try {//入力値の不正をチェックする
+			getNodeSettings();
+		}catch (InputerException e) {
+			// TODO: handle exception
+    		Alert alt = new Alert(AlertType.WARNING);
+    		alt.setTitle("エラー");
+    		alt.setContentText(e.getMessage());
+    		alt.setHeaderText("不正な入力値");
+    		alt.showAndWait();
+    		return; //入力値に不正がある場合はノードイテレータを進めない
+		}
+
+		if(nIte.hasNext()) {//ノードが残っているか
+			nodePointerNext();
 			if(Arrays.stream(haveChildren).anyMatch(child -> Objects.equals(child, wkMn.getComp()))) {
+				//子持ちノードの場合は子をすべてノードイテレータに格納する
 				Parent p = (Parent) wkNode;
 
 				nIte.setRecursive(p.getChildrenUnmodifiable(),1,1);
@@ -169,18 +201,23 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		}
     }
     /**
-     * 次のノードへシフトする
+     * テキストフィールドからノードの設計情報を読み込み記録する
      */
-    private void nodePointer() {
-    	wkNode = nIte.next();
-		wkMn = new MacrosNode(wkNode);
-		fi(wkMn);
-		wkNode.setEffect(newDropShadow());
-		MacrosJson mj = inputer(wkMn);
+    private void getNodeSettings() throws InputerException {
+	    MacrosJson mj = inputer(wkMn);
 		mainMacros.add(mj);
     }
     /**
-     * 対象ノードに適応するエフェクトの設定
+     * 次のノードへシフトする
+     */
+    private void nodePointerNext() {
+    	wkNode = nIte.next();//ノードを進める
+    	wkMn = new MacrosNode(wkNode);//ノードの設計情報
+    	fi(wkMn);//テキストフィールドに値を入れる
+    	wkNode.setEffect(newDropShadow());//
+    }
+    /**
+     * 対象ノードに適応するエフェクト・入力エラーのエフェクトの設定
      * @return
      */
     private static DropShadow newDropShadow() {
@@ -189,6 +226,10 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		ds.setBlurType(BlurType.THREE_PASS_BOX);
 		return ds;
 	}
+    /**
+     * テキストフィールドに設計情報を自動入力する
+     * @param wkNode 設計情報を含んだノード
+     */
     private void fi(MacrosNode wkNode) {
     	compLbl.setText(wkNode.getComp());
     	nameLbl.setText(wkNode.getName());
@@ -203,31 +244,90 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     	textclofi.setText(wkNode.getTextFill());
     	backfi.setText(wkNode.getBackColor());
     	classfi.setText(wkNode.getStyleClass());
+    	bikofi.setText("");
+    }
+    /**
+     * 設計情報入力フォームのエフェクトをリセットする
+     */
+    private void resetEffect() {
+    	rowfi.setEffect(null);
+    	colfi.setEffect(null);
+    	heifi.setEffect(null);
+    	weifi.setEffect(null);
+    	fontfi.setEffect(null);
+    	fsfi.setEffect(null);
+    	yorifi.setEffect(null);
+    	valuefi.setEffect(null);
+    	textclofi.setEffect(null);
+    	backfi.setEffect(null);
+    	bikofi.setEffect(null);
     }
 
     /**
      * ノードの情報を取得する
      * @param wkNode
      * @return 取得したノード情報
+     * @throws InputerException
      */
-    private MacrosJson inputer(MacrosNode wkNode) {
-		MacrosJson wkJSON = new MacrosJson();
-		wkJSON.compName = wkNode.getComp();
-		wkJSON.name = wkNode.getName();
-		wkJSON.x = wkNode.getX();
-		wkJSON.y = wkNode.getY();
-		wkJSON.width = wkNode.getWidth();
-		wkJSON.height = wkNode.getHeight();
-		wkJSON.font = wkNode.getFont();
-		wkJSON.fontSize = wkNode.getFontSize();
-		wkJSON.yori = wkNode.getAlignment();
-		wkJSON.txt = wkNode.getText();
-		wkJSON.txtCo = wkNode.getTextFill();
-		wkJSON.backCo = wkNode.getBackColor();
-		if(wkNode.getComp().equals(whiteText)) {
-			wkJSON.txtCo = ".button";
-		}
-		return wkJSON;
+    private MacrosJson inputer(MacrosNode wkNode) throws InputerException {
+
+    	MacrosJson wkJson = new MacrosJson();//ノードの設計情報を格納する
+    	wkJson.compName = wkNode.getComp();//コンポーネント名
+    	wkJson.name = wkNode.getName();//fxid
+
+    	wkJson.x = checkEmpty(rowfi, "row");//GridRow
+    	wkJson.y = checkEmpty(colfi, "col");//GridColumn
+    	wkJson.width = checkEmpty(weifi, "幅");//ノードの幅
+    	wkJson.height = checkEmpty(heifi,"高さ");//ノードの高さ
+    	wkJson.font = checkEmpty(fontfi, "font");//ノードのフォント
+    	wkJson.fontSize = checkReg(fsfi, "fontsize", sizeInputReg);//ノードのフォントサイズ
+    	wkJson.yori = checkEmpty(yorifi, "寄り");//寄り
+    	wkJson.txt = checkEmpty(valuefi, "値");//表示をしている値
+    	wkJson.txtCo = checkReg(textclofi, "前景色", frontColorReg);//前景色
+    	wkJson.backCo = checkReg(backfi, "背景色", backColorReg);
+    	wkJson.comment = checkEmpty(bikofi, "備考");
+
+
+    	return wkJson;
+	}
+    /**
+     * フォームが空でないか検査する
+     * @param tf 検査対象のテキストフィールド
+     * @param kind フォームの内容の名
+     */
+    private String checkEmpty(TextField tf,String kind) throws InputerException {
+    	if(tf.getText().isEmpty()) {
+    		tf.setEffect(newDropShadow());//対象フィールドにエフェクトを設定
+    		throw new InputerException(kind + "が未入力です。");
+    	}
+    	return tf.getText().strip();
+    }
+    /**
+     * フォームの入力値が入力規制に適応しているか検査する
+     * @param tf 検査対象のテキストフィールド
+     * @param kind フォームの内容の名
+     * @param regs 入力規制の文字列配列
+     */
+    private String checkReg(TextField tf,String kind,String[] regs) throws InputerException {
+    	String st = checkEmpty(tf, kind);
+    	if(Arrays.stream(regs).anyMatch(reg -> reg.equals(st)) == false){
+    		tf.setEffect(newDropShadow());//対象フィールドにエフェクトを設定
+    		throw new InputerException(kind + "の値が入力規制の条件を満たしていません。");
+    	}
+    	return st.strip();
+    }
+
+}
+class InputerException extends Exception{
+	private String msg;
+	public InputerException(String msg) {
+		// TODO 自動生成されたコンストラクター・スタブ
+		this.msg = msg;
+	}
+
+	@Override
+	public String getMessage() {
+		return msg;
 	}
 }
 

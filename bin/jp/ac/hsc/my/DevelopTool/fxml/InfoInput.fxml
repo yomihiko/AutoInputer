@@ -9,7 +9,7 @@
 
 <fx:root fx:id="subAnchorMain" prefHeight="600.0" prefWidth="600.0" stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="fileReadBtn" layoutX="44.0" layoutY="14.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="512.0" text="開始">
+      <Button fx:id="fileReadBtn" layoutX="44.0" layoutY="31.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="512.0" text="開始">
          <font>
             <Font name="Meiryo" size="12.0" />
          </font>
@@ -66,11 +66,6 @@
       <TextField fx:id="backfi" layoutX="374.0" layoutY="410.0" prefHeight="30.0" prefWidth="181.0" />
       <Label layoutX="17.0" layoutY="460.0" text="備考:" />
       <TextField fx:id="bikofi" layoutX="73.0" layoutY="460.0" prefHeight="30.0" prefWidth="484.0" />
-      <Button fx:id="csvBtn" layoutX="44.0" layoutY="54.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="512.0" text="csvファイルをロード">
-         <font>
-            <Font name="Meiryo" size="12.0" />
-         </font>
-      </Button>
       <Label layoutX="290.0" layoutY="91.0" text="styleclass：">
          <font>
             <Font name="Meiryo" size="16.0" />

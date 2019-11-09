@@ -10,8 +10,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jp.ac.hsc.my.DevelopTool.Controllers.MainController;
 import jp.ac.hsc.my.DevelopTool.Controllers.ProvisionalController;
 import jp.ac.hsc.my.DevelopTool.Controllers.SubController;
@@ -22,7 +24,6 @@ public class Main extends Application {
 	private static Stage stage;//メインのステージ
 	private static Stage subStage;//読み込んだファイルのステージ
 	private ArrayList<Node> nList;//自動入力対象画面の全ノードのリスト
-	private MacrosJson wkJson;
 	private final int ABNORMAL = -1;
 	private final String errTitle = "ファイル読み込みエラー";
 	private final String errText = "ファイルの読み込みに失敗しました。";
@@ -34,6 +35,7 @@ public class Main extends Application {
 			stage = primaryStage;
 			stage.setResizable(false);
 			openMain();//メイン画面を開く
+			stage.setOnCloseRequest(e -> endApp(e));						// ×ボタン処理
 			stage.showingProperty().addListener((observable, oldValue, newValue) -> {
 				if (oldValue == true && newValue == false) finishApp();	// ステージが非表示になったときに呼ばれる->最後に呼ばれる
 			});
@@ -47,6 +49,14 @@ public class Main extends Application {
 			System.exit(ABNORMAL);
 		}
 
+	}
+	private void endApp(WindowEvent e) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);		// 確認ダイアログ
+		alert.setTitle("終了確認");
+		alert.setHeaderText("確認");
+		alert.setContentText("アプリケーションを終了しますか？(データは記録されません)");
+		ButtonType buttonType = alert.showAndWait().orElse(ButtonType.CANCEL);
+		if (buttonType == ButtonType.CANCEL) e.consume();
 	}
 	/**
 	 * メインインスタンスゲッター
@@ -112,6 +122,10 @@ public class Main extends Application {
 		subStage.setY(40);
 		subStage.setScene(scene);
 		inputModule(scene);
+		subStage.setOnCloseRequest(e -> endApp(e));						// ×ボタン処理
+		subStage.showingProperty().addListener((observable, oldValue, newValue) -> {
+			if (oldValue == true && newValue == false) finishApp();	// ステージが非表示になったときに呼ばれる->最後に呼ばれる
+		});
 		subStage.show();
 
 	}
