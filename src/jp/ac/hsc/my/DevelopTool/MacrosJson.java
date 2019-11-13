@@ -20,8 +20,8 @@ public class MacrosJson {
 		StringJoiner sj = new StringJoiner(",","","\n");
 		sj.add(compName);
 		sj.add(name);
-		sj.add(x);
 		sj.add(y);
+		sj.add(x);
 		sj.add(width);
 		sj.add(height);
 		sj.add(font);

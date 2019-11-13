@@ -94,7 +94,7 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     @FXML
     private TextArea classfi;
 
-	private String[] haveChildren = {"GridPane","HBox","VBox"};
+	private String[] haveChildren = {"HBox","VBox"};
 	private NodeIterator nIte;//ノードイテレータ
 	private Node wkNode;
 	private MacrosNode wkMn;//減税編集中のノードの設計情報を一時的に保存する
@@ -103,8 +103,11 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	private String[] sizeInputReg =
 		{".root",".timeLabel",".title",".table-view",".titleBtnText",
 				".titleBtnTextSystemName","-"};//文字サイズの入力規制
+
 	private String[] frontColorReg =
-		{"Black",".timeLabel",".button",".title",".titleBtnText","-"};//前景色の入力規制
+		{"Black",".timeLabel",".button",".titleWhite",
+				".titleBtnText",".table-view","-"};//前景色の入力規制
+
 	private String[] backColorReg =
 		{".root",".greenBtn",".blueBtn",".redBtn",".timeBack",".combo-box",".table-view",
 				".titleBack","-"};//背景色の入力規制
@@ -157,9 +160,9 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 	 */
     private void onNextBtn() {
 		wkNode.setEffect(null);//エフェクトを消す
-		resetEffect();//入力フォームのエフェクトを一旦リセットする
 		try {//入力値の不正をチェックする
 			getNodeSettings();
+			resetEffect();//入力フォームのエフェクトを一旦リセットする
 		}catch (InputerException e) {
 			// TODO: handle exception
     		Alert alt = new Alert(AlertType.WARNING);
@@ -171,13 +174,15 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
 		}
 
 		if(nIte.hasNext()) {//ノードが残っているか
-			nodePointerNext();
 			if(Arrays.stream(haveChildren).anyMatch(child -> Objects.equals(child, wkMn.getComp()))) {
 				//子持ちノードの場合は子をすべてノードイテレータに格納する
 				Parent p = (Parent) wkNode;
 
-				nIte.setRecursive(p.getChildrenUnmodifiable(),1,1);
+				//入れ子の子要素のGridPane上のインデックス番号を取得
+
+				nIte.setRecursive(p.getChildrenUnmodifiable());
 			}
+			nodePointerNext();
 		}
     }
 
@@ -233,8 +238,8 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     private void fi(MacrosNode wkNode) {
     	compLbl.setText(wkNode.getComp());
     	nameLbl.setText(wkNode.getName());
-    	rowfi.setText(wkNode.getX());
-    	colfi.setText(wkNode.getY());
+    	rowfi.setText(wkNode.getY());
+    	colfi.setText(wkNode.getX());
     	heifi.setText(wkNode.getHeight());
     	weifi.setText(wkNode.getWidth());
     	fontfi.setText(wkNode.getFont());
@@ -275,8 +280,8 @@ public class SubController extends AnchorPane implements ILoadFxml,Initializable
     	wkJson.compName = wkNode.getComp();//コンポーネント名
     	wkJson.name = wkNode.getName();//fxid
 
-    	wkJson.x = checkEmpty(rowfi, "row");//GridRow
-    	wkJson.y = checkEmpty(colfi, "col");//GridColumn
+    	wkJson.y = checkEmpty(rowfi, "row");//GridRow
+    	wkJson.x = checkEmpty(colfi, "col");//GridColumn
     	wkJson.width = checkEmpty(weifi, "幅");//ノードの幅
     	wkJson.height = checkEmpty(heifi,"高さ");//ノードの高さ
     	wkJson.font = checkEmpty(fontfi, "font");//ノードのフォント

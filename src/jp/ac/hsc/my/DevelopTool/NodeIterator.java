@@ -15,48 +15,43 @@ public class NodeIterator implements Iterator<Node> {
 	private int index;//イテレータ用のインデックス
 	private List<Node> list;//ノードを格納するインデックス
 	private NodeIterator recursive ;//子要素を持つノードを入れ子にする
-	private int row;
-	private int column;
 	public NodeIterator(List<Node> li) {
 		// TODO 自動生成されたコンストラクター・スタブ
 		list = li;
-		index = 0;
-		row = -1;
-		column = -1;
+		index = -1;
 	}
-	public NodeIterator(List<Node> li,int row,int column) {
-		// TODO 自動生成されたコンストラクター・スタブ
-		list = li;
-		index = 0;
-		this.row = row;
-		this.column = column;
-	}
+
 	@Override
 	public boolean hasNext() {
 		// TODO 自動生成されたメソッド・スタブ
-		if(recursive != null && recursive.hasNext()) {
-			return true;
+		if(hasChildren()) {
+			return recursive.hasNext();
 		}
-		return index < list.size();
+		return index + 1 < list.size();
 	}
 
 	@Override
 	public Node next() {
 		// TODO 自動生成されたメソッド・スタブ
-		if(recursive != null && recursive.hasNext()) {
+		if(hasChildren()) {
 			return recursive.next();
 		}
-		Node n = list.get(index);
 		index++;
+		Node n = list.get(index);
 		return n;
 	}
 	/**
 	 * 子要素を持つノードを入れ子にする
 	 * @param li
 	 */
-	public void setRecursive(List<Node> li,int row,int column) {
-		recursive = new NodeIterator(li,row,column);
+	public void setRecursive(List<Node> li) {
+		recursive = new NodeIterator(li);
 	}
+
+	private boolean hasChildren() {
+		return recursive != null && recursive.hasNext();
+	}
+
 
 
 }

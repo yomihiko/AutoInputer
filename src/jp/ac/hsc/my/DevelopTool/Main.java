@@ -130,14 +130,13 @@ public class Main extends Application {
 
 	}
 	/**
-	 * 内部設計自動生成
+	 * 内部設計自動生成準備
 	 * @param fileURL
 	 */
 	public void inputModule(Scene scene) {
 		try {
 			nList = new ArrayList<>();
 			GridPane g = (GridPane)scene.getRoot();//Root要素をGridPaneとして読み込む
-			nList.add(g);
 			nList.addAll(g.getChildren());//GridPaneの子要素をリストに追加
 
 
